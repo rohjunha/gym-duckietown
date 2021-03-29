@@ -107,8 +107,8 @@ def update(dt):
     if v1 == 0 or abs(v2 / v1) > (min_rad + wheel_distance / 2.0) / (min_rad - wheel_distance / 2.0):
         # adjust velocities evenly such that condition is fulfilled
         delta_v = (v2 - v1) / 2 - wheel_distance / (4 * min_rad) * (v1 + v2)
-        v1 += delta_v
-        v2 -= delta_v
+        v1 += abs(delta_v)
+        v2 -= abs(delta_v)
 
     action[0] = v1
     action[1] = v2

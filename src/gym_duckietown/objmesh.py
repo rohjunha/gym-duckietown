@@ -1,6 +1,12 @@
 # coding=utf-8
 import os
-from typing import cast, Dict, TypedDict
+import sys
+
+if sys.version_info >= (3, 8):
+    from typing import cast, Dict, TypedDict
+else:
+    from typing_extensions import TypedDict
+    from typing import cast, Dict
 
 import numpy as np
 import pyglet
