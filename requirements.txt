@@ -1,3 +1,2 @@
-
-duckietown-world-daffy
+git+git://github.com/rohjunha/duckietown-world@daffy
 pipdeptree
