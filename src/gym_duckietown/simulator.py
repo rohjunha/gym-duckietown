@@ -28,7 +28,6 @@ from duckietown_world import (
     get_DB18_nominal,
     get_DB18_uncalibrated,
     get_texture_file,
-    MapFormat1,
     MapFormat1Constants,
     MapFormat1Constants as MF1C,
     MapFormat1Object,
@@ -768,7 +767,7 @@ class Simulator(gym.Env):
 
         self._interpret_map(self.map_data)
 
-    def _interpret_map(self, map_data: MapFormat1):
+    def _interpret_map(self, map_data):
         try:
             if not "tile_size" in map_data:
                 msg = "Must now include explicit tile_size in the map data."
@@ -861,7 +860,7 @@ class Simulator(gym.Env):
             msg = "Cannot load map data"
             raise InvalidMapException(msg, map_data=map_data)
 
-    def _load_objects(self, map_data: MapFormat1):
+    def _load_objects(self, map_data):
         # Create the objects array
         self.objects = []
 
