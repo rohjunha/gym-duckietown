@@ -1,23 +1,26 @@
 # coding=utf-8
 __version__ = "6.1.2"
 
-from zuper_commons.fs import AbsFilePath
-from zuper_commons.logs import ZLogger
+# from zuper_commons.fs import AbsFilePath
+# from zuper_commons.logs import ZLogger
 
 from duckietown_world.resources import list_maps2
+from logging import getLogger
 
-logger = ZLogger("gym-duckietown")
+# logger = ZLogger("gym-duckietown")
+logger = getLogger('gym-duckietown')
 import os
 
+
 path = os.path.dirname(os.path.dirname(__file__))
-logger.debug(f"gym-duckietown version {__version__} path {path}\n")
+# logger.debug(f"gym-duckietown version {__version__} path {path}\n")
 
 from gym.envs.registration import register
 
 from .utils import get_subdir_path
 
 
-def reg_map_env(map_name0: str, map_file: AbsFilePath):
+def reg_map_env(map_name0: str, map_file):
     gym_id = f"Duckietown-{map_name0}-v0"
 
     # logger.info('Registering gym environment id: %s' % gym_id)

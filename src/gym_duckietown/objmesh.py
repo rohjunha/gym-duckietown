@@ -1,6 +1,6 @@
 # coding=utf-8
 import os
-from typing import cast, Dict, TypedDict
+from typing import cast, Dict
 
 import numpy as np
 import pyglet
@@ -13,12 +13,7 @@ from .graphics import load_texture
 __all__ = ["ObjMesh", "get_mesh"]
 
 
-class MatInfo(TypedDict, total=False):
-    Kd: np.ndarray
-    map_Kd: str
-
-
-def get_mesh(mesh_name: str, segment: bool = False, change_materials: Dict[str, MatInfo] = None) -> "ObjMesh":
+def get_mesh(mesh_name: str, segment: bool = False, change_materials=None) -> "ObjMesh":
     """
             Load a mesh or used a cached version
     """
@@ -53,14 +48,14 @@ class ObjMesh:
     cache = {}
 
     mesh_name: str
-    change_materials: Dict[str, MatInfo]
+    # change_materials: Dict[str, MatInfo]
 
     def __init__(
         self,
         file_path: str,
         mesh_name: str,
         segment: bool = False,
-        change_materials: Dict[str, MatInfo] = None,
+        change_materials=None,
     ):
         """
         Load an OBJ model file
@@ -258,13 +253,14 @@ class ObjMesh:
                 assert len(segment_into_color0) == 3
                 return segment_into_color0
 
-            mtl = cast(MatInfo, chunk["mtl"])
+            # mtl = cast(MatInfo, chunk["mtl"])
+            mtl = chunk['mtl']
             if "map_Kd" in mtl:
                 segment_into_color = 0
                 if segment:
                     segment_into_color = gen_segmentation_color(mesh_name)
 
-                fn = cast(str, mtl["map_Kd"])
+                fn = str(mtl["map_Kd"])
                 fn2 = get_resource_path(os.path.basename(fn))
                 texture = load_texture(fn2, segment=segment, segment_into_color=segment_into_color)
             else:
@@ -285,7 +281,7 @@ class ObjMesh:
             self.vlists.append(vlist)
             self.textures.append(texture)
 
-    def _load_mtl(self, model_file: str) -> Dict[str, MatInfo]:
+    def _load_mtl(self, model_file: str):
         model_dir, file_name = os.path.split(model_file)
 
         # Create a default material for the model

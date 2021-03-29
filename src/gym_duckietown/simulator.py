@@ -4,7 +4,7 @@ import os
 from collections import namedtuple
 from ctypes import POINTER
 from dataclasses import dataclass
-from typing import Any, cast, Dict, List, NewType, Optional, Sequence, Tuple, TypedDict, Union
+from typing import Any, cast, Dict, List, NewType, Optional, Sequence, Tuple, Union
 
 import geometry
 import geometry as g
@@ -22,10 +22,8 @@ from duckietown_world import (
     get_DB18_nominal,
     get_DB18_uncalibrated,
     get_texture_file,
-    MapFormat1,
     MapFormat1Constants,
     MapFormat1Constants as MF1C,
-    MapFormat1Object,
     SE2Transform,
 )
 from duckietown_world.gltf.export import get_duckiebot_color_from_colorname
@@ -54,7 +52,7 @@ from .graphics import (
     Texture,
 )
 from .objects import CheckerboardObj, DuckiebotObj, DuckieObj, TrafficLightObj, WorldObj
-from .objmesh import get_mesh, MatInfo, ObjMesh
+from .objmesh import get_mesh, ObjMesh
 from .randomization import Randomizer
 from .utils import get_subdir_path
 
@@ -63,7 +61,7 @@ DIM = 0.5
 TileKind = NewType("TileKind", str)
 
 
-class TileDict(TypedDict):
+class TileDict:
     # {"coords": (i, j), "kind": kind, "angle": angle, "drivable": drivable})
     coords: Tuple[int, int]
     kind: TileKind
@@ -562,7 +560,7 @@ class Simulator(gym.Env):
         # specular = np.array([0.3, 0.3, 0.3, 1])
         specular = np.array([0.0, 0.0, 0.0, 1])
 
-        logger.info(light_pos=light_pos, ambient=ambient, diffuse=diffuse, specular=specular)
+        # logger.info(light_pos=light_pos, ambient=ambient, diffuse=diffuse, specular=specular)
         gl.glLightfv(gl.GL_LIGHT0, gl.GL_POSITION, (gl.GLfloat * 4)(*light_pos))
         gl.glLightfv(gl.GL_LIGHT0, gl.GL_AMBIENT, (gl.GLfloat * 4)(*ambient))
         gl.glLightfv(gl.GL_LIGHT0, gl.GL_DIFFUSE, (gl.GLfloat * 4)(*diffuse))
@@ -762,7 +760,7 @@ class Simulator(gym.Env):
 
         self._interpret_map(self.map_data)
 
-    def _interpret_map(self, map_data: MapFormat1):
+    def _interpret_map(self, map_data):
         try:
             if not "tile_size" in map_data:
                 msg = "Must now include explicit tile_size in the map data."
@@ -853,9 +851,10 @@ class Simulator(gym.Env):
                 self.start_pose = map_data["start_pose"]
         except Exception as e:
             msg = "Cannot load map data"
+            print('ERROR', e)
             raise InvalidMapException(msg, map_data=map_data)
 
-    def _load_objects(self, map_data: MapFormat1):
+    def _load_objects(self, map_data):
         # Create the objects array
         self.objects = []
 
@@ -908,7 +907,7 @@ class Simulator(gym.Env):
         self.collidable_centers = np.array(self.collidable_centers)
         self.collidable_safety_radii = np.array(self.collidable_safety_radii)
 
-    def interpret_object(self, objname: str, desc: MapFormat1Object):
+    def interpret_object(self, objname: str, desc):
         kind = desc["kind"]
 
         W = self.grid_width
@@ -940,9 +939,10 @@ class Simulator(gym.Env):
             mesh = get_duckiebot_mesh(use_color)
 
         elif kind.startswith("sign"):
-            change_materials: Dict[str, MatInfo]
+            # change_materials: Dict[str, MatInfo]
             # logger.info(kind=kind, desc=desc)
-            minfo = cast(MatInfo, {"map_Kd": f"{kind}.png"})
+            # minfo = cast(MatInfo, {"map_Kd": f"{kind}.png"})
+            minfo = {"map_Kd": f"{kind}.png"}
             change_materials = {"April_Tag": minfo}
             mesh = get_mesh("sign_generic", change_materials=change_materials)
         elif kind == "floor_tag":
